@@ -41,6 +41,13 @@ class Doctrine_Search extends Doctrine_Record_Generator
                                 'analyzer_options' => array(),
                                 'type'             => self::INDEX_TABLES,
                                 'className'        => '%CLASS%Index',
+                                /**
+                                 * Fixes Doctrine issue DC-880
+                                 * Fixes Diem issue #326
+                                 * Fix by Andrew Coulton
+                                 * @link https://github.com/acoulton/doctrine1/commits/DC-880
+                                 */
+                                'tableName'        => '%TABLE%_index',
                                 'generatePath'     => false,
                                 'table'            => null,
                                 'batchUpdates'     => false,

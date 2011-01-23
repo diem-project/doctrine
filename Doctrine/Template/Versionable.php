@@ -45,7 +45,13 @@ class Doctrine_Template_Versionable extends Doctrine_Template
                                                              'length' => 8,
                                                              'options' => array()),
 								'generateRelations' => true,
-                                'tableName'         => false,
+                                /**
+                                 * Fixes Doctrine issue DC-880
+                                 * Fixes Diem issue #326
+                                 * Fix by Andrew Coulton
+                                 * @link https://github.com/acoulton/doctrine1/commits/DC-880
+                                 */
+                                'tableName'         => '%TABLE%_version',
                                 'generateFiles'     => false,
                                 'auditLog'          => true,
                                 'deleteVersions'    => true,
