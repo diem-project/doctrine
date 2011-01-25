@@ -49,7 +49,7 @@ class Doctrine_AuditLog extends Doctrine_Record_Generator
                                  * Fix by Andrew Coulton
                                  * @link https://github.com/acoulton/doctrine1/commits/DC-880
                                  */
-                                'tableName'         => '%TABLE%_Version',
+                                'tableName'         => '%TABLE%_version',
                                 'generateFiles'     => false,
                                 'table'             => false,
                                 'pluginTable'       => false,
