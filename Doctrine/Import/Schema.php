@@ -283,7 +283,6 @@ class Doctrine_Import_Schema
             if ( ! empty($models) && !in_array($definition['className'], $models)) {
                 continue;
             }
-            
             $builder->buildRecord($definition);
         }
     }
@@ -491,7 +490,8 @@ class Doctrine_Import_Schema
 
         // Array of the array keys to move to the parent, and the value to default the child definition to
         // after moving it. Will also populate the subclasses array for the inheritance parent
-        $moves = array('columns' => array(),
+        // Fix-inheritance-models: removing columns to move to parent.
+        $moves = array(
                        'indexes' => array(),
                        'attributes' => array(),
                        'options' => array(),

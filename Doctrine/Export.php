@@ -1259,7 +1259,21 @@ class Doctrine_Export extends Doctrine_Connection_Module
             }
 
             $data = $table->getExportableFormat();
-
+            
+            //retrieve all subclasses columns & merge them with this one
+            $subclasses = $table->getOption('subclasses');
+            if(!empty($subclasses) && empty($parents))
+            {
+            	$data['columns'] = array_merge($data['columns'], $this->getColumnsFromSubClasses($table));
+            	$subOptions = $this->getColumnsOptionsFromSubClasses($table);
+            	foreach($subOptions as $subOption)
+            	{
+            		foreach(array('foreignKeys', 'indexes') as $toMerge)
+            		{
+            			$data['options'][$toMerge] = array_merge($data['options'][$toMerge], $subOption[$toMerge]);
+            		}
+            	}
+            }
             $query = $this->conn->export->createTableSql($data['tableName'], $data['columns'], $data['options']);
 
             if (is_array($query)) {
@@ -1282,6 +1296,34 @@ class Doctrine_Export extends Doctrine_Connection_Module
         rsort($sql);
 
         return $sql;
+    }
+    
+    protected function getColumnsFromSubClasses($table)
+    {
+    	$return = array();
+			foreach($table->getOption('subclasses') as $subClass)
+      {
+      	$exportedSubClassTable = Doctrine::getTable($subClass)->getExportableFormat();
+      	$return = array_merge($return, array_merge($exportedSubClassTable['columns'], $this->getColumnsFromSubClasses(Doctrine::getTable($subClass))));
+			}
+    	return $return;
+    }
+    
+    protected function getColumnsOptionsFromSubClasses($table)
+    {
+    	$return = array();
+			foreach($table->getOption('subclasses') as $subClass)
+      {
+      	$subClassTable = Doctrine::getTable($subClass);
+      	$exportedSubClassTable = $subClassTable->getExportableFormat();
+      	$return[$subClass] = $exportedSubClassTable['options'];
+      	//chanding name of fks because these are used to create ALTER TABLE
+      	foreach($return[$subClass]['foreignKeys'] as $fkName => & $fkDef)
+      	{
+      		$fkDef['name'] = str_replace($subClassTable->getOption('tableName'), $table->getOption('tableName'), $fkDef['name']);
+      	}
+			}
+    	return $return;
     }
 
     /**

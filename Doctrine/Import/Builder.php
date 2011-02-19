@@ -333,7 +333,7 @@ class Doctrine_Import_Builder extends Doctrine_Builder
      */
     public function buildTableDefinition(array $definition)
     {
-        if (isset($definition['inheritance']['type']) && ($definition['inheritance']['type'] == 'simple' || $definition['inheritance']['type'] == 'column_aggregation')) {
+        if (isset($definition['inheritance']['type']) && ($definition['inheritance']['type'] == 'simple')) {
             return;
         }
 
@@ -1025,7 +1025,7 @@ class Doctrine_Import_Builder extends Doctrine_Builder
             // If we have a package then we need to make this extend the package definition and not the base definition
             // The package definition will then extends the base definition
             $topLevel['inheritance']['extends'] = (isset($topLevel['package']) && $topLevel['package']) ? $this->_packagesPrefix . $topLevel['className']:$this->_baseClassPrefix . $topLevel['className'];
-            $topLevel['no_definition'] = true;
+            $topLevel['no_definition'] = false;
             $topLevel['generate_once'] = true;
             $topLevel['is_main_class'] = true;
             unset($topLevel['connection']);
